@@ -33,6 +33,12 @@ app.get('/users/:userId', async (req, res) => {
   const { userId } = req.params
   try {
     const response = await fetch(`${BASE_URL}/users/${userId}`)
+
+    // If the upstream service returns 404, forward the status with no body
+    if (response.status === 404) {
+      return res.status(404).end()
+    }
+
     const data = await response.json()
     res.json(data)
   } catch (err) {
